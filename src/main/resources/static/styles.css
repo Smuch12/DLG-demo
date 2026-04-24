@@ -1,0 +1,397 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f2933;
+  background: #eef2f3;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px clamp(18px, 4vw, 56px);
+  background: #ffffff;
+  border-bottom: 1px solid #d7dee4;
+}
+
+.topbar h1,
+.details h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.topbar h1 {
+  font-size: clamp(28px, 4vw, 44px);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #c05746;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.links a {
+  color: #176d68;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid #bfd0cd;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f8fbfb;
+}
+
+main {
+  padding: 26px clamp(14px, 4vw, 56px) 56px;
+}
+
+.lab-shell {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.control-panel,
+.stage,
+.details article {
+  background: #ffffff;
+  border: 1px solid #d7dee4;
+  border-radius: 8px;
+  box-shadow: 0 16px 42px rgba(31, 41, 51, 0.08);
+}
+
+.control-panel {
+  padding: 18px;
+  position: sticky;
+  top: 18px;
+}
+
+.section-title,
+.timeline-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: #46535f;
+  font-weight: 800;
+}
+
+#status-pill {
+  min-width: 82px;
+  text-align: center;
+  color: #ffffff;
+  background: #697783;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+#status-pill[data-status="running"],
+#status-pill[data-status="queued"] {
+  background: #c98624;
+}
+
+#status-pill[data-status="succeeded"] {
+  background: #16817a;
+}
+
+#status-pill[data-status="failed"] {
+  background: #bd4a3d;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 14px;
+  color: #46535f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #c8d2d9;
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: #1f2933;
+  background: #ffffff;
+}
+
+input[type="range"] {
+  padding: 0;
+}
+
+.range-row {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 10px;
+  align-items: center;
+}
+
+.preset-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.preset-row button,
+.timeline button {
+  border: 1px solid #c8d2d9;
+  border-radius: 8px;
+  background: #f7faf9;
+  color: #176d68;
+  font-weight: 800;
+}
+
+.preset-row button {
+  padding: 9px 6px;
+  font-size: 12px;
+}
+
+.split-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.primary-button {
+  width: 100%;
+  min-height: 46px;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #176d68;
+  font-weight: 900;
+}
+
+.primary-button:disabled {
+  cursor: wait;
+  background: #8aa09d;
+}
+
+.note {
+  margin: 12px 0 0;
+  color: #697783;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.stage {
+  padding: clamp(16px, 3vw, 26px);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  margin-bottom: 8px;
+  color: #46535f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.image-box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-height: 260px;
+  border: 1px solid #d7dee4;
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, #f7faf9 25%, transparent 25%),
+    linear-gradient(-45deg, #f7faf9 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f7faf9 75%),
+    linear-gradient(-45deg, transparent 75%, #f7faf9 75%);
+  background-color: #ffffff;
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+  overflow: hidden;
+}
+
+.image-placeholder {
+  color: #697783;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.image-box img {
+  width: min(100%, 360px);
+  height: min(100%, 360px);
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.image-box img:not([src]) {
+  display: none;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.metrics div {
+  min-width: 0;
+  border: 1px solid #d7dee4;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fbfcfc;
+}
+
+.metrics span {
+  display: block;
+  color: #697783;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.metrics strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  font-size: 18px;
+}
+
+#lossChart {
+  width: 100%;
+  height: 220px;
+  border: 1px solid #d7dee4;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.timeline-head {
+  margin: 16px 0 10px;
+}
+
+#jobId {
+  color: #697783;
+  font-size: 12px;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 8px;
+}
+
+.timeline button {
+  display: grid;
+  gap: 5px;
+  padding: 7px;
+  color: #46535f;
+}
+
+.timeline img {
+  width: 100%;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+.timeline span {
+  font-size: 11px;
+}
+
+.log {
+  min-height: 96px;
+  max-height: 160px;
+  overflow: auto;
+  margin: 14px 0 0;
+  border: 1px solid #d7dee4;
+  border-radius: 8px;
+  padding: 12px;
+  color: #dbe7e5;
+  background: #263238;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.details article {
+  padding: 22px;
+}
+
+.details p {
+  color: #46535f;
+  line-height: 1.6;
+}
+
+@media (max-width: 980px) {
+  .lab-shell,
+  .details {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .image-grid,
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .split-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .image-box {
+    min-height: 220px;
+  }
+}
