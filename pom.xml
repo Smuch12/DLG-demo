@@ -9,10 +9,10 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>dlg-privacy-lab</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>dlg-demo</name>
-	<description>Spring Boot + PyTorch demo of the Deep Leakage from Gradients attack.</description>
+	<name>dlg-privacy-lab</name>
+	<description>Spring Boot and PyTorch lab for the Deep Leakage from Gradients attack.</description>
 
 	<properties>
 		<java.version>25</java.version>

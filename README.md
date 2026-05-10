@@ -1,45 +1,26 @@
 # DLG Privacy Lab
 
-A small Spring Boot + PyTorch demo of the **Deep Leakage from Gradients** (DLG)
-attack. You pick a 32x32 target image, the backend computes the true gradient
-of a LeNet on that image, and a Python worker tries to *reverse-engineer the
-pixels* from that gradient alone — optionally after adding Gaussian noise to
-simulate a differential-privacy defence. The UI streams reconstruction frames,
-MSE/PSNR, and a loss chart over server-sent events as the attack runs.
+A compact Spring Boot and PyTorch lab that visualizes the **Deep Leakage from Gradients** (DLG) attack. 
+The project is a small showcase of my work in *Gradient inversion in decentralized differentially private learning*.
 
-Reference: Zhu, Liu, Han, *Deep Leakage from Gradients* (NeurIPS 2019) — <https://arxiv.org/abs/1906.08935>.
+Reference. Zhu, Liu, and Han, *Deep Leakage from Gradients* (NeurIPS 2019). <https://arxiv.org/abs/1906.08935>.
 
 ## What you need
 
-- **Java 21+** (the Maven wrapper uses it; `./mvnw -v` to check)
+- **Java 25**
 - **Python 3.10+** on `PATH` as `python`
 - **Python packages:** `torch`, `torchvision`, `pillow`, `numpy`
   (listed in `requirements-dlg.txt`)
-- Internet access on first run (torchvision downloads CIFAR-100 into `~/.torch`)
 
-## Install
+## Install & Run
 
 ```bash
-# 1. Python deps for the DLG worker
 pip install -r requirements-dlg.txt
-
-# 2. Java deps (Maven wrapper fetches what it needs on first run)
 ./mvnw -DskipTests package
-```
-
-On Windows use `mvnw.cmd` instead of `./mvnw`.
-
-## Run
-
-From the project root:
-
-```bash
 ./mvnw spring-boot:run
 ```
 
-Then open <http://localhost:8080>. Pick a target, set sigma / iterations, and
-click **Run DLG**. Target and reconstruction update live; frames are saved
-under `var/dlg/jobs/<job-id>/frames/`.
+Then open <http://localhost:8080>.
 
 ### Configuration
 
@@ -58,21 +39,6 @@ If `python` isn't on your `PATH`, override it:
 ```bash
 ./mvnw spring-boot:run -Ddlg.python-command=/full/path/to/python
 ```
-
-### Running the worker directly (without the web app)
-
-Useful for debugging:
-
-```bash
-python scripts/dlg_worker.py \
-  --job-dir var/dlg/jobs/manual \
-  --sample cifar:25 \
-  --sigma 0 \
-  --iterations 300 \
-  --frame-every 10
-```
-
-The worker prints one JSON line per progress event to stdout.
 
 ## How it works, end to end
 

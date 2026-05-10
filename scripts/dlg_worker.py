@@ -4,7 +4,6 @@ import math
 import random
 import sys
 from pathlib import Path
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -223,11 +222,7 @@ def main():
         attack_onehot_label = None
         optimizer_parameters.append(dummy_label)
 
-    optimizer = torch.optim.LBFGS(
-        optimizer_parameters,
-        max_iter=args.lbfgs_max_iter,
-        line_search_fn=None,
-    )
+    optimizer = torch.optim.LBFGS(optimizer_parameters,  max_iter=args.lbfgs_max_iter, line_search_fn=None)
 
     frame_path = frame_dir / "000000.png"
     save_tensor_png(dummy_data, frame_path)

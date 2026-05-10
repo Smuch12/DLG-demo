@@ -15,8 +15,7 @@ class DlgJobServiceTests {
 
     @Test
     void rejectsNegativeSigma() {
-        DlgJobService service = new DlgJobService((request, updates) -> {
-        }, tempDir);
+        DlgJobService service = new DlgJobService((request, updates) -> {}, tempDir);
 
         assertThrows(IllegalArgumentException.class, () -> service.createJob(new DlgCreateJobCommand(
                 "synthetic:badge",
@@ -31,8 +30,7 @@ class DlgJobServiceTests {
 
     @Test
     void rejectsUnreadableUpload() {
-        DlgJobService service = new DlgJobService((request, updates) -> {
-        }, tempDir);
+        DlgJobService service = new DlgJobService((request, updates) -> {}, tempDir);
 
         assertThrows(IllegalArgumentException.class, () -> service.createJob(new DlgCreateJobCommand(
                 "synthetic:badge",
