@@ -14,7 +14,7 @@ import demo.dlg.model.DlgProgressPoint;
 import demo.dlg.model.DlgStatus;
 import demo.dlg.model.DlgWorkerUpdate;
 
-final class DlgJob {
+class DlgJob {
     private final String id;
     private final DlgJobParameters parameters;
     private final Path jobDir;
@@ -61,18 +61,18 @@ final class DlgJob {
         return status == DlgStatus.SUCCEEDED || status == DlgStatus.FAILED;
     }
 
-    void markRunning() {
+    void start() {
         status = DlgStatus.RUNNING;
         startedAt = Instant.now();
     }
 
-    void markSucceeded() {
+    void finish() {
         status = DlgStatus.SUCCEEDED;
         completedAt = Instant.now();
         finalFrameUrl = latestFrameUrl;
     }
 
-    void markFailed(String message) {
+    void fail(String message) {
         status = DlgStatus.FAILED;
         completedAt = Instant.now();
         error = message;
@@ -114,7 +114,7 @@ final class DlgJob {
                 latestFrameUrl,
                 finalFrameUrl,
                 error,
-                List.copyOf(progress)
+                progress
         );
     }
 
@@ -132,9 +132,10 @@ final class DlgJob {
 
     void addEmitter(SseEmitter emitter) {
         emitters.add(emitter);
-        emitter.onCompletion(() -> emitters.remove(emitter));
-        emitter.onTimeout(() -> emitters.remove(emitter));
-        emitter.onError(error -> emitters.remove(emitter));
+        Runnable cleanup = () -> emitters.remove(emitter);
+        emitter.onCompletion(cleanup);
+        emitter.onTimeout(cleanup);
+        emitter.onError(err -> cleanup.run());
     }
 
     void broadcast(String eventName, Object data) {

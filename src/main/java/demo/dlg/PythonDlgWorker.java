@@ -33,21 +33,16 @@ public class PythonDlgWorker implements DlgWorker {
 
     @Override
     public void run(DlgWorkerRequest request, Consumer<DlgWorkerUpdate> updates) throws Exception {
-        List<String> command = new ArrayList<>();
-        command.add(pythonCommand);
-        command.add(workerScript.toString());
-        command.add("--job-dir");
-        command.add(request.jobDir().toString());
-        command.add("--sigma");
-        command.add(Double.toString(request.sigma()));
-        command.add("--iterations");
-        command.add(Integer.toString(request.iterations()));
-        command.add("--frame-every");
-        command.add(Integer.toString(request.frameEvery()));
-        command.add("--seed");
-        command.add(Long.toString(request.seed()));
-        command.add("--lbfgs-max-iter");
-        command.add("4");
+        List<String> command = new ArrayList<>(List.of(
+                pythonCommand,
+                workerScript.toString(),
+                "--job-dir", request.jobDir().toString(),
+                "--sigma", Double.toString(request.sigma()),
+                "--iterations", Integer.toString(request.iterations()),
+                "--frame-every", Integer.toString(request.frameEvery()),
+                "--seed", Long.toString(request.seed()),
+                "--lbfgs-max-iter", "4"
+        ));
 
         if (request.targetImage() != null) {
             command.add("--image");

@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.imageio.ImageIO;
 
@@ -36,7 +35,7 @@ public class DlgJobService {
     private final Path jobsRoot;
     private final ExecutorService executor;
     private final Map<String, DlgJob> jobs = new ConcurrentHashMap<>();
-    private final AtomicReference<String> activeJobId = new AtomicReference<>();
+    private DlgJob activeJob;
 
     public DlgJobService(
             DlgWorker worker,
@@ -52,15 +51,13 @@ public class DlgJobService {
         this.executor = Executors.newSingleThreadExecutor(factory);
     }
 
-    public DlgJobSnapshot createJob(DlgCreateJobCommand command) throws IOException {
+    public synchronized DlgJobSnapshot createJob(DlgCreateJobCommand command) throws IOException {
         validate(command);
-        clearFinishedActive();
-
-        String id = UUID.randomUUID().toString();
-        if (!activeJobId.compareAndSet(null, id)) {
+        if (activeJob != null && !activeJob.isTerminal()) {
             throw new IllegalStateException("A DLG job is already running. Wait for it to finish before starting another.");
         }
 
+        String id = UUID.randomUUID().toString();
         Files.createDirectories(jobsRoot);
         Path jobDir = jobsRoot.resolve(id).normalize();
         Files.createDirectories(jobDir.resolve("frames"));
@@ -81,6 +78,7 @@ public class DlgJobService {
         );
         DlgJob job = new DlgJob(id, parameters, jobDir, targetImage);
         jobs.put(id, job);
+        activeJob = job;
         executor.submit(() -> runJob(job));
         return job.snapshot();
     }
@@ -114,25 +112,25 @@ public class DlgJobService {
 
     private void runJob(DlgJob job) {
         try {
-            job.markRunning();
+            job.start();
             job.broadcast("status", job.snapshot());
+            DlgJobParameters p = job.parameters();
             worker.run(new DlgWorkerRequest(
                     job.id(),
                     job.jobDir(),
                     job.targetImage(),
-                    job.parameters().sampleId(),
-                    job.parameters().sigma(),
-                    job.parameters().iterations(),
-                    job.parameters().frameEvery(),
-                    job.parameters().seed()
+                    p.sampleId(),
+                    p.sigma(),
+                    p.iterations(),
+                    p.frameEvery(),
+                    p.seed()
             ), update -> handleUpdate(job, update));
-            job.markSucceeded();
+            job.finish();
             job.broadcast("done", job.snapshot());
         } catch (Exception e) {
-            job.markFailed(e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage());
+            job.fail(e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage());
             job.broadcast("error", job.snapshot());
         } finally {
-            activeJobId.compareAndSet(job.id(), null);
             job.completeEmitters();
         }
     }
@@ -159,17 +157,6 @@ public class DlgJobService {
             throw new IllegalArgumentException("Unknown DLG job: " + id);
         }
         return job;
-    }
-
-    private void clearFinishedActive() {
-        String id = activeJobId.get();
-        if (id == null) {
-            return;
-        }
-        DlgJob job = jobs.get(id);
-        if (job == null || job.isTerminal()) {
-            activeJobId.compareAndSet(id, null);
-        }
     }
 
     private static void validate(DlgCreateJobCommand command) {
